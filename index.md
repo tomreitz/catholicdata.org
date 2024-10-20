@@ -31,23 +31,23 @@ We plan to add the following further information:
 Below are available data endpoints and links to further documentation.
 
 ## Regions
-* [regions.json](/regions.json), which contains all regions
-* [regions_ecclesiastical.json](/regions_ecclesiastical.json), which contains only ecclesiastical regions
-* [regions_ecclesiastical_current.json](/regions_ecclesiastical_current.json), which contains only current ecclesiastical regions
+* [regions.json](/data/regions.json), which contains all regions
+* [regions_ecclesiastical.json](/data/regions_ecclesiastical.json), which contains only ecclesiastical regions
+* [regions_ecclesiastical_current.json](/data/regions_ecclesiastical_current.json), which contains only current ecclesiastical regions
 * [Documentation](/regions.html)
 
 ## Places
-* [places.json](/places.json), which contains all places
-* [Documentation](/places.html)
+* [places.json](/data/places.json), which contains all places
+* [Documentation](/data/places.html)
 
 ## People
-* [people.json](/people.json), which contains all people
-* [Documentation](/people.html)
+* [people.json](/data/people.json), which contains all people
+* [Documentation](/data/people.html)
 
 ## Organizations
-* [organizations.json](/organizations.json), which contains all organizations
-* [Documentation](/organizations.html)
+* [organizations.json](/data/organizations.json), which contains all organizations
+* [Documentation](/data/organizations.html)
 
-## Literature
-* [literature.json](/literature.json), which contains all literature
-* [Documentation](/literature.html)
+## Documents
+* [documents.json](/data/documents.json), which contains all documents
+* [Documentation](/data/documents.html)
