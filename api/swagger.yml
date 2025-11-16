@@ -1,0 +1,293 @@
+openapi: 3.0.4
+info:
+  title: CatholicData - OpenAPI 3.0
+  description: |-
+    This document is an OpenAPI 3.0 specification describing the data model for catholicdata.org.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://catholicdata.org/
+paths:
+  /data/regions.json:
+    get:
+      summary: Geographic areas.
+      description: Regions include both secular (governmental, regional) boundaries as well as ecclesiastical ones (defined by the Church).
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Region'
+  /data/places.json:
+    get:
+      summary: Geographic points.
+      description: Places are points of interest such as basilicas and churches.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Place'
+  /data/people.json:
+    get:
+      summary: People.
+      description: "Notable Catholics and people connected to the Catholic church: saints, popes, cardinals, bishops, and more."
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+  /data/organizations.json:
+    get:
+      summary: Organizations.
+      description: Notable Catholic organizations such as orders, charitable and service organizations, and more.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Organization"
+  /data/documents.json:
+    get:
+      summary: Documents.
+      description: Important Catholic documents such as papal encyclicals and bulls, church council documents, and books and other writings of notable saints.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Document"
+components:
+  schemas:
+    Region:
+      type: object
+      properties:
+        id:
+          type: string
+          example: region/ecclesiastical/roman/usa/nc/charlotte
+        name:
+          type: string
+          example: Diocese of Charlotte
+        domain:
+          type: string
+          enum:
+            - Secular
+            - Ecclesiastical
+            - Other
+        type:
+          type: string
+          enum:
+            - Country
+            - State
+            - Province
+            - County
+            - Archdiocese
+            - Archeparchy
+            - Eparchy
+            - Diocese
+            - Apostolic Prefecture
+            - Military Ordinariate
+            - Personal Ordinariate
+            - Territorial Prelature
+            - Apostolic Administration
+            - Personal Prelature
+            - Secretariat
+            - Other
+        historical:
+          type: boolean
+          description: Whether the region is still recognized or active today.
+        location:
+          description: The location of the principal point in or centroid of this region.
+          type: object
+          properties:
+            country:
+              description: The name of the country this region is associated.
+              type: string
+            state:
+              description: The name of the state or province this region is associated.
+              type: string
+            city:
+              description: The name of the city this region is associated with.
+              type: string
+            latitute:
+              type: number
+              format: double
+              description: The latitude of the principal point in or centroid of this region.
+            longitude:
+              type: number
+              format: double
+              description: The longitude of the principal point in or centroid of this region.
+            timezone:
+              type: string
+              description: The primary timezone of this region.
+            geojson:
+              description: The URL to a GeoJSON file containing the boundary data for this region
+              type: string
+              format: url
+        contact:
+          description: Contact information associated with this region.
+          type: object
+          properties:
+            email:
+              type: string
+            phone:
+              type: string
+            fax:
+              type: string
+            website:
+              type: string
+              format: url
+        social:
+          description: Social media information associated with this region.
+          type: object
+          properties:
+            facebook:
+              description: The URL of the Facebook page or account for this region.
+              type: string
+              format: url
+            twitter:
+              description: The URL of the Twitter or X account for this region.
+              type: string
+              format: url
+            instagram:
+              description: The URL of the Instagram account for this region.
+              type: string
+              format: url
+            youtube:
+              description: The URL of the YouTube account for this region.
+              type: string
+              format: url
+        parentIDs:
+          description: A list of IDs of parent Regions this region is contained within. (A Region can have multiple parent Regions, for example a Dicoese may have both the State it is located in and the Archdiocese whose jurisdiction it falls within.)
+          type: array
+          items:
+            description: The ID of another Region.
+            type: string
+            example: region/ecclesiastical/roman/usa/ga/atlanta
+        childIDs:
+          description: A list of IDs of child Regions this region contains.
+          type: array
+          items:
+            description: The ID of another Region.
+            type: string
+            example: region/secular/usa/nc/charlotte
+        createdTime:
+          description: The date and time this Region entered the dataset.
+          type: string
+          format: date-time
+        modifiedTime:
+          description: The date and time this Region was last modified
+          type: string
+          format: date-time
+        sources:
+          description: A list of URLs that serve as sources for this data item.
+          type: array
+          items:
+            description: The ID of another Region.
+            type: string
+            format: url
+            example: https://en.wikipedia.org/wiki/Roman_Catholic_Diocese_of_Madison
+    Place:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Dogs
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        phone:
+          type: string
+          example: '12345'
+        userStatus:
+          type: integer
+          description: User Status
+          format: int32
+          example: 1
+    Organization:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Document:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: doggie
+        photoUrls:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            xml:
+              name: photoUrl
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - available
+            - pending
+            - sold
+    Event:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
