@@ -115,93 +115,26 @@ components:
           example: Diocese
         historical:
           type: boolean
-          description: Whether the region is still recognized or active today.
+          description: Whether the region is no longer recognized or active today.
           example: false
         location:
-          description: The location of the principal point in or centroid of this region.
-          type: object
-          properties:
-            country:
-              description: The name of the country this region is associated.
-              type: string
-              example: United States
-            state:
-              description: The name of the state or province this region is associated.
-              type: string
-              example: Wisconsin
-            city:
-              description: The name of the city this region is associated with.
-              type: string
-              example: Madison
-            latitute:
-              type: number
-              format: double
-              description: The latitude of the principal point in or centroid of this region.
-              example: 43.073052
-            longitude:
-              type: number
-              format: double
-              description: The longitude of the principal point in or centroid of this region.
-              example: -89.40123
-            timezone:
-              type: string
-              description: The primary timezone of this region.
-              example: -6
-            geojson:
-              description: The URL to a GeoJSON file containing the boundary data for this region
-              type: string
-              format: url
-              example: https://catholicdata.org/geojson/ecclesiastical/wisconsin-madison.geojson
+          allOf:
+            - $ref: '#/components/schemas/Location'
+            - type: object
+              properties:
+                timezone:
+                  type: string
+                  description: The primary timezone of this region.
+                  example: -6
+                geojson:
+                  description: The URL to a GeoJSON file containing the boundary data for this region
+                  type: string
+                  format: url
+                  example: https://catholicdata.org/geojson/ecclesiastical/wisconsin-madison.geojson
         contact:
-          description: Contact information associated with this region.
-          type: object
-          properties:
-            address:
-              description: A mailing address for contacting this Region.
-              type: string
-              example: >
-                702 South High Point Road, Suite 225
-                Madison, WI 53719
-            email:
-              description: An email address for contacting this Region.
-              type: string
-              example: communication@madisondiocese.org
-            phone:
-              description: A phone number for contacting this Region.
-              type: string
-              example: +1-608-821-3000
-            fax:
-              description: A fax number for contacting this Region.
-              type: string
-              example: +1-608-440-2808
-            website:
-              description: The primary website for this Region.
-              type: string
-              format: url
-              example: https://www.madisondiocese.org/
-        social:
-          description: Social media information associated with this region.
-          type: object
-          properties:
-            facebook:
-              description: The URL of the Facebook page or account for this region.
-              type: string
-              format: url
-              example: https://www.facebook.com/madisondiocese
-            twitter:
-              description: The URL of the Twitter or X account for this region.
-              type: string
-              format: url
-              example: https://twitter.com/MadisonDiocese
-            instagram:
-              description: The URL of the Instagram account for this region.
-              type: string
-              format: url
-            youtube:
-              description: The URL of the YouTube account for this region.
-              type: string
-              format: url
-              example: https://www.youtube.com/channel/UCe5Nhw392UTDm7pMpTMEy6Q
+          $ref: '#/components/schemas/Contact'
+        socials:
+          $ref: '#/components/schemas/Socials'
         parentIDs:
           description: A list of IDs of parent Regions this region is contained within. (A Region can have multiple parent Regions, for example a Dicoese may have both the State it is located in and the Archdiocese whose jurisdiction it falls within.)
           type: array
@@ -211,11 +144,11 @@ components:
             example: region/ecclesiastical/roman/usa/wi/milwaukee
         childIDs:
           description: A list of IDs of child Regions this region contains.
+          example: []
           type: array
           items:
             description: The ID of another Region.
             type: string
-            example: region/secular/usa/wi/madison
         createdTime:
           description: The date and time this Region entered the dataset.
           type: string
@@ -227,23 +160,60 @@ components:
           format: date-time
           example: 2020-08-20 20:36:32
         sources:
-          description: A list of URLs that serve as sources for this data item.
-          type: array
-          items:
-            description: The ID of another Region.
-            type: string
-            format: url
-            example: https://en.wikipedia.org/wiki/Roman_Catholic_Diocese_of_Madison
+          $ref: '#/components/schemas/Sources'
     Place:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          example: place/cathedral/usa-wi-madison/st-raphael
         name:
           type: string
-          example: Dogs
+          example: Cathedral of St. Raphael
+        historical:
+          type: boolean
+          description: Whether the place no longer exists or is recognized today.
+          example: true
+        type:
+          type: string
+          enum:
+            - National Shrine
+            - Major Basilica
+            - Minor Basililca
+            - Basilica
+            - Cathedral
+            - Church
+            - School
+            - Shrine
+            - Mission
+            - Abbey
+            - Monastery
+            - Convent
+            - Other
+          example: Cathedral
+        location:
+          allOf:
+            - $ref: '#/components/schemas/Location'
+            - type: object
+              properties:
+                googlePlaceID:
+                  type: string
+                  description: The Google Place ID for this place (see https://developers.google.com/maps/documentation/places/web-service/place-id).
+                  example: EicxMyBNYXJrZXQgU3QsIFdpbG1pbmd0b24sIE5DIDI4NDAxLCBVU0E
+        socials:
+          $ref: '#/components/schemas/Socials'
+        contact:
+          $ref: '#/components/schemas/Contact'
+        parentRegions:
+          description: A list of IDs of parent Regions this place is located within.
+          type: array
+          items:
+            description: The ID of a Region.
+            type: string
+            example: region/ecclesiastical/roman/usa/wi/madison
+        sources:
+          $ref: '#/components/schemas/Sources'
+        
     Person:
       type: object
       properties:
@@ -320,3 +290,96 @@ components:
           type: string
         message:
           type: string
+    
+    Socials:
+      description: Social media information associated with an object.
+      type: object
+      properties:
+        facebook:
+          description: The URL of the Facebook page or account for this region.
+          type: string
+          format: url
+          example: https://www.facebook.com/madisondiocese
+        twitter:
+          description: The URL of the Twitter or X account for this region.
+          type: string
+          format: url
+          example: https://twitter.com/MadisonDiocese
+        instagram:
+          description: The URL of the Instagram account for this region.
+          type: string
+          format: url
+        youtube:
+          description: The URL of the YouTube account for this region.
+          type: string
+          format: url
+          example: https://www.youtube.com/channel/UCe5Nhw392UTDm7pMpTMEy6Q
+    Location:
+      description: The location of a Place or Region.
+      type: object
+      properties:
+        address:
+          description: The physical address.
+          type: string
+          example: >
+            222 West Main Street
+            Madison, WI 53703
+        country:
+          description: The name of the country this Place or Region is located within.
+          type: string
+          example: United States
+        state:
+          description: The name of the state or province this Place or Region is located within.
+          type: string
+          example: Wisconsin
+        city:
+          description: The name of the town or city this Place or Region is located within.
+          type: string
+          example: Madison
+        latitute:
+          type: number
+          format: double
+          description: The latitude of a Place, or of the principal point in or centroid of a Region.
+          example: 43.073052
+        longitude:
+          type: number
+          format: double
+          description: The longitude of a Place, or of the principal point in or centroid of a Region
+          example: -89.40123
+    Contact:
+      description: Contact information associated with a Region, Place, or Person.
+      type: object
+      properties:
+        address:
+          description: A mailing address for contacting this Region.
+          type: string
+          example: |
+            702 South High Point Road, Suite 225
+            Madison, WI 53719
+        email:
+          description: An email address for contacting this Region.
+          type: string
+          example: communication@madisondiocese.org
+        phone:
+          description: A phone number for contacting this Region.
+          type: string
+          example: +1-608-821-3000
+        fax:
+          description: A fax number for contacting this Region.
+          type: string
+          example: +1-608-440-2808
+        website:
+          description: The primary website for this Region.
+          type: string
+          format: url
+          example: https://www.madisondiocese.org/
+    Sources:
+      description: A list of URLs that serve as sources for this data item.
+      type: array
+      items:
+        description: The URL of a source.
+        type: string
+        format: url
+      example:
+        - https://en.wikipedia.org/wiki/Roman_Catholic_Diocese_of_Madison
+        - https://www.catholic-hierarchy.org/diocese/dmadi.html
