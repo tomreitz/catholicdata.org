@@ -77,8 +77,16 @@ paths:
                   $ref: "#/components/schemas/Document"
 components:
   schemas:
+
     Region:
       type: object
+      required:
+        - id
+        - name
+        - domain
+        - type
+        - historical
+        - createdTime
       properties:
         id:
           type: string
@@ -119,7 +127,7 @@ components:
           example: false
         location:
           allOf:
-            - $ref: '#/components/schemas/Location'
+            - $ref: '#/components/schemas/locationComponent'
             - type: object
               properties:
                 timezone:
@@ -132,9 +140,9 @@ components:
                   format: url
                   example: https://catholicdata.org/geojson/ecclesiastical/wisconsin-madison.geojson
         contact:
-          $ref: '#/components/schemas/Contact'
+          $ref: '#/components/schemas/contactComponent'
         socials:
-          $ref: '#/components/schemas/Socials'
+          $ref: '#/components/schemas/socialsComponent'
         parentIDs:
           description: A list of IDs of parent Regions this region is contained within. (A Region can have multiple parent Regions, for example a Dicoese may have both the State it is located in and the Archdiocese whose jurisdiction it falls within.)
           type: array
@@ -160,9 +168,16 @@ components:
           format: date-time
           example: 2020-08-20 20:36:32
         sources:
-          $ref: '#/components/schemas/Sources'
+          $ref: '#/components/schemas/sourcesComponent'
+
     Place:
       type: object
+      required:
+        - id
+        - name
+        - historical
+        - type
+        - createdTime
       properties:
         id:
           type: string
@@ -193,7 +208,7 @@ components:
           example: Cathedral
         location:
           allOf:
-            - $ref: '#/components/schemas/Location'
+            - $ref: '#/components/schemas/locationComponent'
             - type: object
               properties:
                 googlePlaceID:
@@ -201,9 +216,9 @@ components:
                   description: The Google Place ID for this place (see https://developers.google.com/maps/documentation/places/web-service/place-id).
                   example: EicxMyBNYXJrZXQgU3QsIFdpbG1pbmd0b24sIE5DIDI4NDAxLCBVU0E
         socials:
-          $ref: '#/components/schemas/Socials'
+          $ref: '#/components/schemas/socialsComponent'
         contact:
-          $ref: '#/components/schemas/Contact'
+          $ref: '#/components/schemas/contactComponent'
         parentRegions:
           description: A list of IDs of parent Regions this place is located within.
           type: array
@@ -211,47 +226,316 @@ components:
             description: The ID of a Region.
             type: string
             example: region/ecclesiastical/roman/usa/wi/madison
+        createdTime:
+          description: The date and time this Region entered the dataset.
+          type: string
+          format: date-time
+          example: 2020-08-20 18:44:37
+        modifiedTime:
+          description: The date and time this Region was last modified
+          type: string
+          format: date-time
+          example: 2020-08-20 20:36:32
         sources:
-          $ref: '#/components/schemas/Sources'
+          $ref: '#/components/schemas/sourcesComponent'
         
     Person:
       type: object
+      required:
+        - id
+        - displayName
+        - deceased
+        - createdTime
       properties:
         id:
-          type: integer
-          format: int64
-          example: 10
-        username:
           type: string
-          example: theUser
+          description: A unique identifier for the person.
+          example: person/usa/robert-morlino
+        state:
+          description: The person's state in life.
+          type: string
+          enum:
+            - ordained
+            - married
+            - single
+          example: "ordained"
+        rank:
+          description: If ordained, the person's rank in the Church.
+          type: string
+          enum:
+            - Pope
+            - Cardinal
+            - Bishop
+            - Priest
+            - Deacon
+          example: Bishop
+        status:
+          description: The (deceased) person's status in the Church's canonization process.
+          type: string
+          enum:
+            - Servant of God
+            - Venerable
+            - Blessed
+            - Saint
+          example: ""
+        affiliations:
+          description: The person's affiliation(s) with Organizations.
+          type: array
+          items:
+            properties:
+              organizationId:
+                type: string
+                description: The ID of the affiliate Organization.
+                example: organization/order/jesuits
+              startDate:
+                description: The date this affiliation began.
+                type: string
+                format: date
+                example: 1974-06-01
+              endDate:
+                description: The date this affiliation ended.
+                type: string
+                format: date
+                example: ""
         firstName:
           type: string
-          example: John
+          description: The person's legal first or given name.
+          example: Robert
+        middleName:
+          type: string
+          description: The person's legal middle name(s), if any.
+          example: Charles
         lastName:
           type: string
-          example: James
-        email:
+          description: The person's legal last or family name.
+          example: Morlino
+        displayName:
           type: string
-          example: john@email.com
-        password:
+          example: Bishop Robert C. Morlino
+        otherNames:
+          type: array
+          description: A list of other names by which the person may be known.
+          items:
+            type: string
+            example: ""
+        deceased:
+          type: boolean
+          description: Whether the person has died.
+          example: True
+        relationships:
+          description: The person's relationships with other People.
+          type: array
+          items:
+            properties:
+              relationshipType:
+                type: string
+                description: The type of the relationship.
+                enum:
+                  - spouse of
+                  - parent of
+                  - sibling of
+                  - aunt of
+                  - uncle of
+                  - cousin of
+                  - child of
+                  - grandparent of
+                  - grandchild of
+                  - godparent of
+                  - sponsor of
+              startDate:
+                description: The date this relationship began.
+                type: string
+                format: date
+                example: 1974-06-01
+              endDate:
+                description: The date this relationship ended.
+                type: string
+                format: date
+                example: ""
+        positions:
+          description: The person's assignments to positions in the Church or government.
+          type: array
+          items:
+            properties:
+              title:
+                type: string
+                description: The title associated with this position or assignment.
+                enum:
+                  - Abbot
+                  - Apostolic Administrator
+                  - Apostolic Exarch
+                  - Apostolic Delegate
+                  - Apostolic Nuncio
+                  - Archbishop
+                  - Archeparch
+                  - Bishop
+                  - Coadjutor Bishop
+                  - Diocesan Administrator
+                  - Eparch
+                  - Metropolitan
+                  - Mother
+                  - Papal Legate
+                  - Papal Nuncio
+                  - Patriarchal Exarch
+                  - Patriarchal Vicar
+                  - Permanent Apostolic Administrator
+                  - Personal Prelate
+                  - Prefect Apostolic
+                  - Pontifical Delegate
+                  - Territorial Prelate
+                  - Territorial Abbot
+                  - Titular Archbishop
+                  - Titular Bishop
+                  - Vicar Apostolic
+                  - King
+                  - Queen
+                  - Emperor
+                  - Prime Minister
+                  - Chancellor
+                  - President
+                example: Bishop
+              regionId:
+                type: string
+                description: The ID of the Region associated with this position or assignment.
+                example: region/ecclesiastical/roman/usa/wi/madison
+              placeId:
+                type: string
+                description: The ID of the Place associated with this position or assignment.
+                example: place/seminary/usa/mi/detroit/sacred-heart-major-seminary
+              appointedByPersonId:
+                type: string
+                description: The ID of another Person who appointed this person to this position or assignment.
+                example: person/poland/karol-wojtyla
+              startDate:
+                description: The date this position or assignment began.
+                type: string
+                format: date
+                example: 2003-05-23
+              endDate:
+                description: The date this position or assignment ended.
+                type: string
+                format: date
+                example: 2018-11-24
+        events:
+          description: Notable events in the person's life.
+          type: array
+          items:
+            required:
+              - eventType
+              - date
+            properties:
+              eventType:
+                type: string
+                enum:
+                  - born
+                  - baptized
+                  - received first communion
+                  - confirmed
+                  - studied at
+                  - moved to
+                  - married
+                  - ordained deacon
+                  - ordained priest
+                  - consecrated bishop
+                  - elevated to cardinal
+                  - incardinated
+                  - laicized
+                  - excommunicated
+                  - resigned
+                  - retired
+                  - died
+              regionId:
+                type: string
+                description: The ID of the Region where this event occurred, or to which the person moved.
+                example: region/ecclesiastical/roman/usa/wi/madison
+              placeId:
+                type: string
+                description: The ID of the Place where this event occurred, or to which the person moved.
+                example: place/seminary/usa/mi/detroit/sacred-heart-major-seminary
+              personId:
+                type: string
+                description: The ID of another Person by whom this person was baptized, ordained, consecrated, excommunicated, killed, etc., or to whom this person was married.
+                example: person/poland/karol-wojtyla
+              date:
+                description: The date of this event.
+                type: string
+                format: date
+                example: 2003-05-23
+        createdTime:
+          description: The date and time this Person entered the dataset.
           type: string
-          example: '12345'
-        phone:
+          format: date-time
+          example: 2020-08-20 18:44:37
+        modifiedTime:
+          description: The date and time this Person was last modified.
           type: string
-          example: '12345'
-        userStatus:
-          type: integer
-          description: User Status
-          format: int32
-          example: 1
+          format: date-time
+          example: 2020-08-20 20:36:32
+        sources:
+          $ref: '#/components/schemas/sourcesComponent'
+
     Organization:
       type: object
+      required:
+        - id
+        - name
+        - historical
+        - type
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
+          example: organization/order/jesuits
         name:
           type: string
+          example: Jesuits
+        abbreviation:
+          type: string
+          example: S.J.
+        otherNames:
+          type: array
+          items:
+            type: string
+            example: Society of Jesus
+        historical:
+          type: boolean
+          description: Whether the Organization no longer exists or is recognized today.
+          example: false
+        type:
+          type: string
+          enum:
+            - Religious Institutes
+            - Orders
+            - Minor Basililca
+            - Basilica
+            - Cathedral
+        founderIds:
+          type: array
+          description: A list of IDs of People who founded this organization.
+          items:
+            type: string
+        dateFounded:
+          type: string
+          description: The date the Organization was founded.
+          format: date
+          example: 1540-09-27
+        dateDisbanded:
+          type: string
+          description: The date the Organization was disbanded.
+          format: date
+          example: null
+        createdTime:
+          description: The date and time this Organization entered the dataset.
+          type: string
+          format: date-time
+          example: 2020-08-20 18:44:37
+        modifiedTime:
+          description: The date and time this Organization was last modified.
+          type: string
+          format: date-time
+          example: 2020-08-20 20:36:32
+        sources:
+          $ref: '#/components/schemas/sourcesComponent'
+
     Document:
       required:
         - name
@@ -259,39 +543,65 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
-          example: 10
-        name:
           type: string
-          example: doggie
-        photoUrls:
-          type: array
-          xml:
-            wrapped: true
-          items:
-            type: string
-            xml:
-              name: photoUrl
-        status:
+          example: document/order/jesuits
+        title:
           type: string
-          description: pet status in the store
-          enum:
-            - available
-            - pending
-            - sold
-    Event:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
+          example: Caritas in veritate
         type:
           type: string
-        message:
+          description: The type of this Document.
+          enum:
+            - Apostolic Constitution
+            - Apostolic Exhortation
+            - Apostolic Letter
+            - Council Document
+            - Motu Proprio
+            - Papal Encyclical
+            - Papal Bull
+            - Book
+            - Commentary
+            - Other
+        publicationDate:
           type: string
-    
-    Socials:
+          format: date
+          description: The date this Document was published.
+          example: 2009-06-29
+        authorIds:
+          type: array
+          description: A list of the People who authored this Document.
+          items:
+            type: string
+            example: person/germany/joseph-ratzinger
+        textLinks:
+          type: array
+          items:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                format: url
+                example: https://www.vatican.va/content/benedict-xvi/en/encyclicals/documents/hf_ben-xvi_enc_20090629_caritas-in-veritate.html
+              language:
+                type: string
+                example: English
+        createdTime:
+          description: The date and time this Document entered the dataset.
+          type: string
+          format: date-time
+          example: 2020-08-20 18:44:37
+        modifiedTime:
+          description: The date and time this Document was last modified.
+          type: string
+          format: date-time
+          example: 2020-08-20 20:36:32
+        sources:
+          $ref: '#/components/schemas/sourcesComponent'
+
+
+    socialsComponent:
       description: Social media information associated with an object.
       type: object
       properties:
@@ -314,7 +624,7 @@ components:
           type: string
           format: url
           example: https://www.youtube.com/channel/UCe5Nhw392UTDm7pMpTMEy6Q
-    Location:
+    locationComponent:
       description: The location of a Place or Region.
       type: object
       properties:
@@ -346,7 +656,7 @@ components:
           format: double
           description: The longitude of a Place, or of the principal point in or centroid of a Region
           example: -89.40123
-    Contact:
+    contactComponent:
       description: Contact information associated with a Region, Place, or Person.
       type: object
       properties:
@@ -373,7 +683,7 @@ components:
           type: string
           format: url
           example: https://www.madisondiocese.org/
-    Sources:
+    sourcesComponent:
       description: A list of URLs that serve as sources for this data item.
       type: array
       items:
