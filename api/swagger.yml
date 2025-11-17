@@ -157,6 +157,57 @@ components:
           items:
             description: The ID of another Region.
             type: string
+        events:
+          description: Notable events associated with the Region.
+          type: array
+          items:
+            required:
+              - eventType
+              - date
+            properties:
+              eventType:
+                type: string
+                enum:
+                  - erected
+                  - established
+                  - elevated
+                  - renamed
+                  - split
+                  - united
+                  - absorbed
+                  - suppressed
+                  - other
+              date:
+                description: The date of this event.
+                type: string
+                format: date
+                example: 2003-05-23
+              notes:
+                type: string
+                description: Notes associated with this event.
+              associatedRegions:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - regionId
+                  properties:
+                    regionId:
+                      type: string
+                      description: The ID of another Region associated with this event.
+                      example: region/ecclesiastical/roman/usa/wi/madison
+                    association:
+                      type: string
+                      description: How this other region is associated with this event.
+                      enum:
+                        - into
+                        - from
+                        - with
+                      example: (for eventType=absorbed) into
+              associatedPersonId:
+                type: string
+                description: The ID of the Person (typically a Pope) under whose authority this event occurred.
+                example: person/poland/karol-wojtyla
         createdTime:
           description: The date and time this Region entered the dataset.
           type: string
@@ -215,6 +266,36 @@ components:
                   type: string
                   description: The Google Place ID for this place (see https://developers.google.com/maps/documentation/places/web-service/place-id).
                   example: EicxMyBNYXJrZXQgU3QsIFdpbG1pbmd0b24sIE5DIDI4NDAxLCBVU0E
+        events:
+          description: Notable events associated with the Place.
+          type: array
+          items:
+            required:
+              - eventType
+              - date
+            properties:
+              eventType:
+                type: string
+                enum:
+                  - established
+                  - constructed
+                  - dedicated
+                  - damaged
+                  - destroyed
+                  - restored
+                  - closed
+              date:
+                description: The date of this event.
+                type: string
+                format: date
+                example: 2003-05-23
+              notes:
+                type: string
+                description: Notes associated with this event.
+              associatedPersonId:
+                type: string
+                description: The ID of the Person responsible for this event occurred.
+                example: person/poland/karol-wojtyla
         socials:
           $ref: '#/components/schemas/socialsComponent'
         contact:
@@ -508,21 +589,34 @@ components:
             - Minor Basililca
             - Basilica
             - Cathedral
-        founderIds:
+        events:
+          description: Notable events associated with the Organization.
           type: array
-          description: A list of IDs of People who founded this organization.
           items:
-            type: string
-        dateFounded:
-          type: string
-          description: The date the Organization was founded.
-          format: date
-          example: 1540-09-27
-        dateDisbanded:
-          type: string
-          description: The date the Organization was disbanded.
-          format: date
-          example: null
+            required:
+              - eventType
+              - date
+            properties:
+              eventType:
+                type: string
+                enum:
+                  - founded
+                  - disbanded
+                example: founded
+              date:
+                description: The date of this event.
+                type: string
+                format: date
+                example: 1540-09-27
+              notes:
+                type: string
+                description: Notes associated with this event.
+              associatedPersonIds:
+                type: array
+                items:
+                  type: string
+                  description: The ID of the Person responsible for this event.
+                  example: person/poland/karol-wojtyla
         createdTime:
           description: The date and time this Organization entered the dataset.
           type: string
