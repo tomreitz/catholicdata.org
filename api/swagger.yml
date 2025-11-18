@@ -631,14 +631,18 @@ components:
           $ref: '#/components/schemas/sourcesComponent'
 
     Document:
-      required:
-        - name
-        - photoUrls
       type: object
+      required:
+        - id
+        - title
+        - type
+        - publicationDate
+        - createdTime
+      description: Papal encyclicals, church council documents, and other notable Catholic documents and literature.
       properties:
         id:
           type: string
-          example: document/order/jesuits
+          example: document/encyclical/2009/caritas-in-veritate
         title:
           type: string
           example: Caritas in veritate
@@ -654,6 +658,7 @@ components:
             - Papal Encyclical
             - Papal Bull
             - Book
+            - Letter
             - Commentary
             - Other
         publicationDate:
